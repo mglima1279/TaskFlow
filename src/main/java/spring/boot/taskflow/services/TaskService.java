@@ -12,20 +12,14 @@ import spring.boot.taskflow.entities.Task;
 import spring.boot.taskflow.entities.User;
 import spring.boot.taskflow.enums.StatusEnum;
 import spring.boot.taskflow.repositories.TaskRepository;
-import spring.boot.taskflow.security.CustomUserDetails;
 
 @Service
 @RequiredArgsConstructor
 public class TaskService {
 
-    private final JwtService jwtService;
     private final TaskRepository taskRepository;
 
-    public Task createTask(CreateTaskRequestDTO request, User user, String token) {
-        if (!jwtService.isTokenValid(token, new CustomUserDetails(user))) {
-            return null;
-        }
-
+    public Task createTask(CreateTaskRequestDTO request, User user) {
         Task task = request.toEntity();
 
         task.setStatus(StatusEnum.PENDING);
@@ -35,11 +29,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Task readTask(long id, User user, String token) {
-        if (!jwtService.isTokenValid(token, new CustomUserDetails(user))) {
-            return null;
-        }
-
+    public Task readTask(long id) {
         Optional<Task> existingTask = taskRepository.findById(id);
 
         if (existingTask.isPresent()) {
@@ -49,19 +39,11 @@ public class TaskService {
         return null;
     }
 
-    public List<Task> readAllTasks(User user, String token) {
-        if (!jwtService.isTokenValid(token, new CustomUserDetails(user))) {
-            return null;
-        }
-
+    public List<Task> readAllTasks(User user) {
         return taskRepository.findAll();
     }
 
-    public Task updateTask(long id, CreateTaskRequestDTO request, User user, String token) {
-        if (!jwtService.isTokenValid(token, new CustomUserDetails(user))) {
-            return null;
-        }
-
+    public Task updateTask(long id, CreateTaskRequestDTO request) {
         Optional<Task> existingTask = taskRepository.findById(id);
 
         if (existingTask.isEmpty()) {
@@ -78,11 +60,7 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Task updateTaskStatus(long id, StatusEnum status, User user, String token) {
-        if (!jwtService.isTokenValid(token, new CustomUserDetails(user))) {
-            return null;
-        }
-
+    public Task updateTaskStatus(long id, StatusEnum status, User user) {
         Optional<Task> existingTask = taskRepository.findById(id);
 
         if (existingTask.isEmpty()) {
@@ -97,12 +75,10 @@ public class TaskService {
     }
 
     public void deleteTask(long id, User user, String token) {
-        if (jwtService.isTokenValid(token, new CustomUserDetails(user))) {
-            Optional<Task> existingTask = taskRepository.findById(id);
+        Optional<Task> existingTask = taskRepository.findById(id);
 
-            if (existingTask.isPresent()) {
-                taskRepository.deleteById(id);
-            }
+        if (existingTask.isPresent()) {
+            taskRepository.deleteById(id);
         }
     }
 }

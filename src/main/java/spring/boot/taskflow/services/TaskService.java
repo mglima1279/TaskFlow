@@ -29,21 +29,25 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public Task readTask(long id) {
+    public Task readTask(long id, User user) {
         Optional<Task> existingTask = taskRepository.findById(id);
 
         if (existingTask.isPresent()) {
-            return existingTask.get();
+            Task task = existingTask.get();
+
+            if (task.getUser().getId() == user.getId()) {
+                return task;
+            }
         }
 
         return null;
     }
 
     public List<Task> readAllTasks(User user) {
-        return taskRepository.findAll();
+        return taskRepository.findByUser(user);
     }
 
-    public Task updateTask(long id, CreateTaskRequestDTO request) {
+    public Task updateTask(long id, CreateTaskRequestDTO request, User user) {
         Optional<Task> existingTask = taskRepository.findById(id);
 
         if (existingTask.isEmpty()) {
@@ -51,6 +55,10 @@ public class TaskService {
         }
 
         Task task = existingTask.get();
+
+        if (task.getUser().getId() != user.getId()) {
+            return null;
+        }
 
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
@@ -69,16 +77,24 @@ public class TaskService {
 
         Task task = existingTask.get();
 
+        if (task.getUser().getId() != user.getId()) {
+            return null;
+        }
+
         task.setStatus(status);
 
         return taskRepository.save(task);
     }
 
-    public void deleteTask(long id, User user, String token) {
+    public void deleteTask(long id, User user) {
         Optional<Task> existingTask = taskRepository.findById(id);
 
         if (existingTask.isPresent()) {
-            taskRepository.deleteById(id);
+            Task task = existingTask.get();
+
+            if (task.getUser().getId() == user.getId()) {
+                taskRepository.deleteById(id);
+            }
         }
     }
 }

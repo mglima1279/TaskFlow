@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testador de API - Tarefas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            max-width: 800px;
+        }
+
+        fieldset {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        legend {
+            font-weight: bold;
+            padding: 0 5px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 14px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 8px 15px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        hr {
+            margin: 30px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Testador de Endpoints da API</h1>
+
+    <h2>Autenticação</h2>
+
+    <fieldset>
+        <legend>POST /auth/register</legend>
+        <form id="form-register">
+            <div class="form-group">
+                <label for="reg-name">Name:</label>
+                <input type="text" id="reg-name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="reg-email">Email:</label>
+                <input type="email" id="reg-email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="reg-password">Password:</label>
+                <input type="password" id="reg-password" name="password" required>
+            </div>
+            <button type="submit">Registrar</button>
+        </form>
+    </fieldset>
+
+    <fieldset>
+        <legend>POST /auth/login</legend>
+        <form id="form-login">
+            <div class="form-group">
+                <label for="log-email">Email:</label>
+                <input type="email" id="log-email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="log-password">Password:</label>
+                <input type="password" id="log-password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+    </fieldset>
+
+    <hr>
+
+    <h2>Usuário</h2>
+
+    <fieldset>
+        <legend>GET /users/me</legend>
+        <form id="form-get-me">
+            <button type="submit">Buscar Meu Perfil</button>
+        </form>
+    </fieldset>
+
+    <hr>
+
+    <h2>Tarefas (Tasks)</h2>
+
+    <fieldset>
+        <legend>POST /tasks</legend>
+        <form id="form-create-task">
+            <div class="form-group">
+                <label for="create-title">Title:</label>
+                <input type="text" id="create-title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="create-desc">Description:</label>
+                <textarea id="create-desc" name="description" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="create-priority">Priority:</label>
+                <select id="create-priority" name="priority">
+                    <option value="LOW">LOW</option>
+                    <option value="MEDIUM">MEDIUM</option>
+                    <option value="HIGH">HIGH</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="create-deadline">Deadline (LocalDate):</label>
+                <input type="date" id="create-deadline" name="deadline" required>
+            </div>
+            <button type="submit">Criar Tarefa</button>
+        </form>
+    </fieldset>
+
+    <fieldset>
+        <legend>GET /tasks</legend>
+        <form id="form-list-tasks">
+            <button type="submit">Listar Tarefas</button>
+        </form>
+    </fieldset>
+
+    <fieldset>
+        <legend>GET /tasks/{id}</legend>
+        <form id="form-get-task">
+            <div class="form-group">
+                <label for="get-task-id">Task ID (Path):</label>
+                <input type="text" id="get-task-id" name="taskId" required>
+            </div>
+            <button type="submit">Buscar Tarefa</button>
+        </form>
+    </fieldset>
+
+    <fieldset>
+        <legend>DELETE /tasks/{id}</legend>
+        <form id="form-delete-task">
+            <div class="form-group">
+                <label for="del-task-id">Task ID (Path):</label>
+                <input type="text" id="del-task-id" name="taskId" required>
+            </div>
+            <button type="submit">Deletar Tarefa</button>
+        </form>
+    </fieldset>
+
+    <fieldset>
+        <legend>PUT /tasks/{id}</legend>
+        <form id="form-update-task">
+            <div class="form-group">
+                <label for="upd-task-id">Task ID (Path):</label>
+                <input type="text" id="upd-task-id" name="taskId" required>
+            </div>
+            <div class="form-group">
+                <label for="upd-title">Title:</label>
+                <input type="text" id="upd-title" name="title" required>
+            </div>
+            <div class="form-group">
+                <label for="upd-desc">Description:</label>
+                <textarea id="upd-desc" name="description" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="upd-priority">Priority:</label>
+                <select id="upd-priority" name="priority">
+                    <option value="LOW">LOW</option>
+                    <option value="MEDIUM">MEDIUM</option>
+                    <option value="HIGH">HIGH</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="upd-deadline">Deadline (LocalDate):</label>
+                <input type="date" id="upd-deadline" name="deadline" required>
+            </div>
+            <button type="submit">Atualizar Tarefa (Completa)</button>
+        </form>
+    </fieldset>
+
+    <fieldset>
+        <legend>PATCH /tasks/{id}/status</legend>
+        <form id="form-patch-status">
+            <div class="form-group">
+                <label for="patch-task-id">Task ID (Path):</label>
+                <input type="text" id="patch-task-id" name="taskId" required>
+            </div>
+            <div class="form-group">
+                <label for="patch-status">Status (Raw Text):</label>
+                <select id="patch-status" name="status">
+                    <option value="PENDING">PENDING</option>
+                    <option value="DONE">DONE</option>
+                </select>
+            </div>
+            <button type="submit">Atualizar Status</button>
+        </form>
+    </fieldset>
+
+    <script src="app.js" defer></script>
+</body>
+
+</html>

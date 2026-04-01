@@ -11,6 +11,7 @@ import spring.boot.taskflow.dto.CreateTaskRequestDTO;
 import spring.boot.taskflow.entities.Task;
 import spring.boot.taskflow.entities.User;
 import spring.boot.taskflow.enums.StatusEnum;
+import spring.boot.taskflow.exceptions.TaskNotFoundException;
 import spring.boot.taskflow.repositories.TaskRepository;
 
 @Service
@@ -32,12 +33,14 @@ public class TaskService {
     public Task readTask(long id, User user) {
         Optional<Task> existingTask = taskRepository.findById(id);
 
-        if (existingTask.isPresent()) {
-            Task task = existingTask.get();
+        if (existingTask.isEmpty()) {
+            throw new TaskNotFoundException();
+        }
 
-            if (task.getUser().getId() == user.getId()) {
-                return task;
-            }
+        Task task = existingTask.get();
+
+        if (task.getUser().getId() == user.getId()) {
+            return task;
         }
 
         return null;
@@ -51,7 +54,7 @@ public class TaskService {
         Optional<Task> existingTask = taskRepository.findById(id);
 
         if (existingTask.isEmpty()) {
-            return null;
+            throw new TaskNotFoundException();
         }
 
         Task task = existingTask.get();
@@ -72,7 +75,7 @@ public class TaskService {
         Optional<Task> existingTask = taskRepository.findById(id);
 
         if (existingTask.isEmpty()) {
-            return null;
+            throw new TaskNotFoundException();
         }
 
         Task task = existingTask.get();
@@ -89,12 +92,14 @@ public class TaskService {
     public void deleteTask(long id, User user) {
         Optional<Task> existingTask = taskRepository.findById(id);
 
-        if (existingTask.isPresent()) {
-            Task task = existingTask.get();
+        if (existingTask.isEmpty()) {
+            throw new TaskNotFoundException();
+        }
 
-            if (task.getUser().getId() == user.getId()) {
-                taskRepository.deleteById(id);
-            }
+        Task task = existingTask.get();
+
+        if (task.getUser().getId() == user.getId()) {
+            taskRepository.deleteById(id);
         }
     }
 }

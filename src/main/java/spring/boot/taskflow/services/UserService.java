@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import spring.boot.taskflow.dto.CreateUserRequestDTO;
 import spring.boot.taskflow.dto.LoginUserRequestDTO;
 import spring.boot.taskflow.entities.User;
+import spring.boot.taskflow.exceptions.TaskNotFoundException;
 import spring.boot.taskflow.repositories.UserRepository;
 
 @Service
@@ -38,7 +39,7 @@ public class UserService {
         Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
 
         if (existingUser.isEmpty()) {
-            return false;
+            throw new TaskNotFoundException();
         }
 
         User user = existingUser.get();
@@ -50,7 +51,7 @@ public class UserService {
         Optional<User> existingUser = userRepository.findByEmail(email);
 
         if (existingUser.isEmpty()) {
-            return null;
+            throw new TaskNotFoundException();
         }
 
         return existingUser.get();
@@ -60,7 +61,7 @@ public class UserService {
         Optional<User> existingUser = userRepository.findById(id);
 
         if (existingUser.isEmpty()) {
-            return null;
+            throw new TaskNotFoundException();
         }
 
         return existingUser.get();

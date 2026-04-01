@@ -12,6 +12,7 @@ import spring.boot.taskflow.entities.Task;
 import spring.boot.taskflow.entities.User;
 import spring.boot.taskflow.enums.StatusEnum;
 import spring.boot.taskflow.exceptions.TaskNotFoundException;
+import spring.boot.taskflow.exceptions.UnauthorizedUserExeption;
 import spring.boot.taskflow.repositories.TaskRepository;
 
 @Service
@@ -39,11 +40,11 @@ public class TaskService {
 
         Task task = existingTask.get();
 
-        if (task.getUser().getId() == user.getId()) {
-            return task;
+        if (task.getUser().getId() != user.getId()) {
+            throw new UnauthorizedUserExeption();
         }
 
-        return null;
+        return task;
     }
 
     public List<Task> readAllTasks(User user) {
@@ -60,7 +61,7 @@ public class TaskService {
         Task task = existingTask.get();
 
         if (task.getUser().getId() != user.getId()) {
-            return null;
+            throw new UnauthorizedUserExeption();
         }
 
         task.setTitle(request.getTitle());
@@ -74,14 +75,10 @@ public class TaskService {
     public Task updateTaskStatus(long id, StatusEnum status, User user) {
         Optional<Task> existingTask = taskRepository.findById(id);
 
-        if (existingTask.isEmpty()) {
-            throw new TaskNotFoundException();
-        }
-
-        Task task = existingTask.get();
+        Task task = existingTask.orElseThrow(() -> new TaskNotFoundException());
 
         if (task.getUser().getId() != user.getId()) {
-            return null;
+            throw new UnauthorizedUserExeption();
         }
 
         task.setStatus(status);
@@ -92,14 +89,12 @@ public class TaskService {
     public void deleteTask(long id, User user) {
         Optional<Task> existingTask = taskRepository.findById(id);
 
-        if (existingTask.isEmpty()) {
-            throw new TaskNotFoundException();
+        Task task = existingTask.orElseThrow(() -> new TaskNotFoundException());
+
+        if (task.getUser().getId() != user.getId()) {
+            throw new UnauthorizedUserExeption();
         }
 
-        Task task = existingTask.get();
-
-        if (task.getUser().getId() == user.getId()) {
-            taskRepository.deleteById(id);
-        }
+        taskRepository.deleteById(id);
     }
 }

@@ -38,15 +38,7 @@ public class TaskController {
 
         User user = userService.getUserByEmail(userDetails.getUsername());
 
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-
         Task task = taskService.createTask(request, user);
-
-        if (task == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
         return ResponseEntity.ok(TaskResponseDTO.fromEntity(task));
     }
@@ -56,10 +48,6 @@ public class TaskController {
             @AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
 
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-
         return ResponseEntity.ok(taskService.readAllTasks(user).stream().map(TaskResponseDTO::fromEntity).toList());
     }
 
@@ -68,15 +56,7 @@ public class TaskController {
             @AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
 
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-
         Task task = taskService.readTask(id, user);
-
-        if (task == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
         return ResponseEntity.ok(TaskResponseDTO.fromEntity(task));
     }
@@ -85,10 +65,6 @@ public class TaskController {
     public ResponseEntity<Void> deleteTask(@PathVariable long id,
             @AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
-
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
 
         taskService.deleteTask(id, user);
 
@@ -100,15 +76,7 @@ public class TaskController {
             @AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.getUserByEmail(userDetails.getUsername());
 
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-
         Task task = taskService.updateTask(id, request, user);
-
-        if (task == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
         return ResponseEntity.ok(TaskResponseDTO.fromEntity(task));
     }
@@ -119,15 +87,7 @@ public class TaskController {
 
         User user = userService.getUserByEmail(userDetails.getUsername());
 
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-
         Task task = taskService.updateTaskStatus(id, request, user);
-
-        if (task == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
         return ResponseEntity.ok(TaskResponseDTO.fromEntity(task));
     }

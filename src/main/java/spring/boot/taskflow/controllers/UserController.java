@@ -25,10 +25,6 @@ public class UserController {
 
         User user = userService.getUserByEmail(userDetails.getUsername());
 
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-
         return ResponseEntity.status(HttpStatus.OK).body(UserResponseDTO.fromEntity(user));
     }
 

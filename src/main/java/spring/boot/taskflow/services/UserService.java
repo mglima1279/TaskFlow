@@ -9,7 +9,8 @@ import lombok.RequiredArgsConstructor;
 import spring.boot.taskflow.dto.CreateUserRequestDTO;
 import spring.boot.taskflow.dto.LoginUserRequestDTO;
 import spring.boot.taskflow.entities.User;
-import spring.boot.taskflow.exceptions.TaskNotFoundException;
+import spring.boot.taskflow.exceptions.ExistingUserException;
+import spring.boot.taskflow.exceptions.UserNotFoundException;
 import spring.boot.taskflow.repositories.UserRepository;
 
 @Service
@@ -23,7 +24,7 @@ public class UserService {
         Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
 
         if (existingUser.isPresent()) {
-            return null;
+            throw new ExistingUserException();
         }
 
         User user = request.toEntity();
@@ -38,11 +39,7 @@ public class UserService {
     public Boolean loginUser(LoginUserRequestDTO request) {
         Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
 
-        if (existingUser.isEmpty()) {
-            throw new TaskNotFoundException();
-        }
-
-        User user = existingUser.get();
+        User user = existingUser.orElseThrow(() -> new UserNotFoundException());
 
         return passwordEncoder.matches(request.getPassword(), user.getPassword());
     }
@@ -50,36 +47,28 @@ public class UserService {
     public User getUserByEmail(String email) {
         Optional<User> existingUser = userRepository.findByEmail(email);
 
-        if (existingUser.isEmpty()) {
-            throw new TaskNotFoundException();
-        }
+        User user = existingUser.orElseThrow(() -> new UserNotFoundException());
 
-        return existingUser.get();
+        return user;
     }
 
     public User getUserById(long id) {
         Optional<User> existingUser = userRepository.findById(id);
 
-        if (existingUser.isEmpty()) {
-            throw new TaskNotFoundException();
-        }
+        User user = existingUser.orElseThrow(() -> new UserNotFoundException());
 
-        return existingUser.get();
+        return user;
     }
 
     public void deleteUserById(long id) {
-        Optional<User> existingUser = userRepository.findById(id);
-
-        if (existingUser.isPresent()) {
-            userRepository.deleteById(id);
-        }
+        userRepository.deleteById(id);
     }
 
     public void deleteUserByEmail(String email) {
         Optional<User> existingUser = userRepository.findByEmail(email);
 
-        if (existingUser.isPresent()) {
-            userRepository.deleteById(existingUser.get().getId());
-        }
+        User user = existingUser.orElseThrow(() -> new UserNotFoundException());
+
+        userRepository.deleteById(user.getId());
     }
 }

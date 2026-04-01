@@ -114,7 +114,7 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<TaskResponseDTO> updateTaskStatus(@PathVariable long id, @RequestBody StatusEnum status,
+    public ResponseEntity<TaskResponseDTO> updateTaskStatus(@PathVariable long id, @RequestBody StatusEnum request,
             @AuthenticationPrincipal UserDetails userDetails) {
 
         User user = userService.getUserByEmail(userDetails.getUsername());
@@ -123,7 +123,7 @@ public class TaskController {
             return ResponseEntity.notFound().build();
         }
 
-        Task task = taskService.updateTaskStatus(id, status, user);
+        Task task = taskService.updateTaskStatus(id, request, user);
 
         if (task == null) {
             return ResponseEntity.badRequest().build();
